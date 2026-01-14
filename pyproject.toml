@@ -4,6 +4,9 @@ version = "1.0.0"
 description = "AI-powered retinal disease detection using EfficientNet-B3"
 requires-python = ">=3.9"
 
+[tool.poetry]
+package-mode = false
+
 [dependency-groups]
 dev = [
     "streamlit",

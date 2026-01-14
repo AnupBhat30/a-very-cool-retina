@@ -167,28 +167,50 @@ def load_model(model_name="efficientnet_b3_epoch6_best_odp(2).pth"):
     return model, device
 
 def download_model_from_kaggle(model_filename):
-    """Download model from Kaggle Models using kaggle API or direct link"""
+    """Download model from Kaggle Models using kaggle API"""
     try:
-        # Try using kaggle API if installed
         from kaggle.api.kaggle_api_extended import KaggleApi
+        import os
+        import glob
         
+        st.info("🔑 Authenticating with Kaggle...")
         api = KaggleApi()
         api.authenticate()
         
-        # Download from Kaggle Models
-        # Format: kaggle models instances versions download owner/model
-        api.models_download_files(
-            'anupbhat30/testing-model-fyp',
-            path='.',
-            unzip=True
+        st.info(f"📥 Downloading {model_filename} from Kaggle (this may take a few minutes)...")
+        
+        # Download model from Kaggle Models
+        # The API downloads to a folder: testing-model-fyp/
+        api.model_download(
+            remote_path='anupbhat30/testing-model-fyp',
+            path='.'
         )
-        st.success(f"✅ Model downloaded successfully!")
+        
+        # Find the .pth file in the downloaded folder
+        pth_files = glob.glob('**/efficientnet*.pth', recursive=True)
+        if pth_files:
+            src = pth_files[0]
+            # Move to current directory if it's in a subfolder
+            if src != model_filename:
+                import shutil
+                shutil.move(src, model_filename)
+                st.success(f"✅ Model extracted and ready!")
+        else:
+            st.success(f"✅ Model downloaded successfully!")
+        
+    except ImportError:
+        st.error("❌ Kaggle package not installed. Run: pip install kaggle")
+        st.info("Setup instructions:")
+        st.code("pip install kaggle", language="bash")
+        st.info("1. Download kaggle.json from https://www.kaggle.com/settings/account")
+        st.info("2. Place it at ~/.kaggle/kaggle.json")
+        st.info("3. Restart the app")
+        raise
         
     except Exception as e:
-        st.error(f"❌ Could not download from Kaggle: {str(e)}")
-        st.info("Please ensure you have:")
-        st.code("pip install kaggle")
-        st.info("And Kaggle API credentials set up at ~/.kaggle/kaggle.json")
+        st.error(f"❌ Download failed: {str(e)}")
+        st.info("Troubleshooting:")
+        st.code("export KAGGLE_USERNAME=your_username\nexport KAGGLE_KEY=your_api_key", language="bash")
         raise
 
 def apply_clahe(image):

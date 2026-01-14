@@ -12,8 +12,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import os
 from pathlib import Path
-import urllib.request
-import zipfile
+from huggingface_hub import hf_hub_download
 
 # Page config
 st.set_page_config(
@@ -167,50 +166,26 @@ def load_model(model_name="efficientnet_b3_epoch6_best_odp(2).pth"):
     return model, device
 
 def download_model_from_kaggle(model_filename):
-    """Download model from Kaggle Models using kaggle API"""
+    """Download model from Hugging Face Hub"""
     try:
-        from kaggle.api.kaggle_api_extended import KaggleApi
-        import os
-        import glob
+        st.info(f"📥 Downloading {model_filename} from Hugging Face (this may take a few minutes)...")
         
-        st.info("🔑 Authenticating with Kaggle...")
-        api = KaggleApi()
-        api.authenticate()
-        
-        st.info(f"📥 Downloading {model_filename} from Kaggle (this may take a few minutes)...")
-        
-        # Download model from Kaggle Models
-        # The API downloads to a folder: testing-model-fyp/
-        api.model_download(
-            remote_path='anupbhat30/testing-model-fyp',
-            path='.'
+        model_path = hf_hub_download(
+            repo_id="anupbhat/effnet-Retinal-Fundus",
+            filename=model_filename,
+            cache_dir="."
         )
         
-        # Find the .pth file in the downloaded folder
-        pth_files = glob.glob('**/efficientnet*.pth', recursive=True)
-        if pth_files:
-            src = pth_files[0]
-            # Move to current directory if it's in a subfolder
-            if src != model_filename:
-                import shutil
-                shutil.move(src, model_filename)
-                st.success(f"✅ Model extracted and ready!")
-        else:
-            st.success(f"✅ Model downloaded successfully!")
+        # Copy to current directory
+        import shutil
+        if model_path != model_filename:
+            shutil.copy(model_path, model_filename)
         
-    except ImportError:
-        st.error("❌ Kaggle package not installed. Run: pip install kaggle")
-        st.info("Setup instructions:")
-        st.code("pip install kaggle", language="bash")
-        st.info("1. Download kaggle.json from https://www.kaggle.com/settings/account")
-        st.info("2. Place it at ~/.kaggle/kaggle.json")
-        st.info("3. Restart the app")
-        raise
+        st.success(f"✅ Model downloaded successfully!")
         
     except Exception as e:
         st.error(f"❌ Download failed: {str(e)}")
-        st.info("Troubleshooting:")
-        st.code("export KAGGLE_USERNAME=your_username\nexport KAGGLE_KEY=your_api_key", language="bash")
+        st.info("Make sure huggingface_hub is installed: pip install huggingface_hub")
         raise
 
 def apply_clahe(image):
@@ -383,7 +358,7 @@ def main():
 
         # Model info
         st.header("📂 Model")
-        st.info("✅ Model: EfficientNet-B3 from Kaggle (anupbhat30/testing-model-fyp)")
+        st.info("✅ Model: EfficientNet-B3 from Hugging Face (anupbhat/effnet-Retinal-Fundus)")
 
     # Main content
     col1, col2 = st.columns([1, 1])

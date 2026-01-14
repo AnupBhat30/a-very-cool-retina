@@ -8,4 +8,4 @@ pillow
 plotly
 pandas
 numpy
-kaggle
+huggingface-hub

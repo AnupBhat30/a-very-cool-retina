@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Streamlit
+.streamlit/
+*.streamlit
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Environment variables
+.env
+.env.local
+
+# Lock files (optional - uncomment if you want to track)
+# uv.lock
+
+# Model weights (keep local, don't push to repo)
+*.pth
+*.pt
+*.onnx
+best_inception_v3.pth
+efficientnet_b3_epoch6_best_odp(2).pth
+
+# Large files
+*.zip
+*.tar.gz
+*.ogg
+
+# OS
+.DS_Store
+Thumbs.db

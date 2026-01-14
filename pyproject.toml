@@ -1,0 +1,14 @@
+[dependency-groups]
+dev = [
+    "streamlit",
+    "torch",
+    "torchvision",
+    "timm",
+    "albumentations",
+    "opencv-python-headless",
+    "pillow",
+    "plotly",
+    "pandas",
+    "numpy",
+    "kaggle",
+]
